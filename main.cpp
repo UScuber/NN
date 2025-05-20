@@ -1,5 +1,5 @@
 #include "model.hpp"
-#include "irisdataset.hpp"
+#include "loaddataset.hpp"
 #include "scaler.hpp"
 
 
@@ -46,36 +46,18 @@ void train_test_split(
   }
 }
 
-int main(){
+int main(int argc, char *argv[]){
+  std::string data_filename = "iris";
+  if(argc >= 2){
+    data_filename = std::string(argv[1]);
+  }
+  data_filename += ".txt";
+
   const double lr = 0.02;
 
-  const int input_size = iris_dataset[0].data.size();
-
-  Model model(lr);
-  model.add_layer<Input>(input_size);
-  model.add_layer<Sigmoid>(8);
-  model.add_layer<Output>(3);
-
-  model.init_params();
-  // std::random_device seed_gen;
-  // std::mt19937 engine(seed_gen());
-  // std::shuffle(iris_dataset.begin(), iris_dataset.end(), engine);
-
-  // const int datasize = (int)iris_dataset.size() * 0.8;
-  // const int testdatasize = (int)iris_dataset.size() - datasize;
-  // const std::vector<Iris> train_data(iris_dataset.begin(), iris_dataset.begin() + datasize);
-  // const std::vector<Iris> test_data(iris_dataset.begin() + datasize, iris_dataset.end());
-
-  // matrix<double> X_train(datasize, input_size);
-  // matrix<double> y_train(datasize, 3);
-  // for(int i = 0; i < datasize; i++){
-  //   X_train[i] = iris_dataset[i].data;
-  //   assert(iris_dataset[i].data.size() == 4);
-  //   y_train[i][iris_dataset[i].kind] = 1;
-  // }
   matrix<double> X_data;
   std::vector<int> y_data;
-  load_iris(X_data, y_data);
+  load_dataset(X_data, y_data, data_filename);
 
   matrix<double> X_train, y_train, X_test;
   std::vector<int> y_test;
@@ -85,6 +67,13 @@ int main(){
   ss.fit(X_train);
   ss.transform(X_train);
   ss.transform(X_test);
+
+  Model model(lr);
+  model.add_layer<Input>(X_train.width());
+  model.add_layer<Sigmoid>(8);
+  model.add_layer<Output>(y_train.width());
+
+  model.init_params();
 
   model.train(X_train, y_train, 1000);
 
