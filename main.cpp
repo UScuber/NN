@@ -53,7 +53,7 @@ int main(int argc, char *argv[]){
   }
   data_filename += ".txt";
 
-  const double lr = 0.02;
+  const double lr = 0.01;
 
   matrix<double> X_data;
   std::vector<int> y_data;
@@ -70,12 +70,13 @@ int main(int argc, char *argv[]){
 
   Model model(lr);
   model.add_layer<Input>(X_train.width());
-  model.add_layer<Sigmoid>(8);
+  model.add_layer<Sigmoid>(128);
   model.add_layer<Output>(y_train.width());
+  model.show_overview();
 
   model.init_params();
 
-  model.train(X_train, y_train, 1000);
+  model.train(X_train, y_train, 40);
 
 
   const auto pred = model.predict(X_test);

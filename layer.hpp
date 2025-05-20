@@ -53,6 +53,8 @@ struct Layer {
     return e;
   }
 
+  virtual std::string name() const = 0;
+
   int size, pre_size;
 private:
   virtual double f(const double x) = 0;
@@ -63,6 +65,9 @@ protected:
 
 struct Input : Layer {
   using Layer::Layer;
+
+  std::string name() const{ return "Input"; }
+
 private:
   double f(const double x){
     return x;
@@ -73,20 +78,11 @@ private:
   }
 };
 
-struct Output : Layer {
-  using Layer::Layer;
-private:
-  double f(const double x){
-    return x;
-  }
-
-  double df(const double){
-    return 1;
-  }
-};
-
 struct ReLU : Layer {
   using Layer::Layer;
+
+  std::string name() const{ return "ReLU"; }
+
 private:
   double f(const double x){
     return std::max(0.0, x);
@@ -99,6 +95,9 @@ private:
 
 struct Sigmoid : Layer {
   using Layer::Layer;
+
+  std::string name() const{ return "Sigmoid"; }
+
 private:
   double f(const double x){
     return 1.0 / (1.0 + exp(-x));
@@ -107,4 +106,19 @@ private:
   double df(const double x){
     return f(x) * (1.0 - f(x));
   }
+};
+
+struct Output : Sigmoid {
+  using Sigmoid::Sigmoid;
+
+  std::string name() const{ return "Output"; }
+
+// private:
+//   double f(const double x){
+//     return x;
+//   }
+
+//   double df(const double){
+//     return 1;
+//   }
 };

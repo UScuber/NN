@@ -1,4 +1,5 @@
 #pragma once
+
 #include <cmath>
 #include "matrix.hpp"
 
@@ -27,7 +28,7 @@ struct StandardScaler {
     }
   }
 
-  void transform(matrix<double> &data){
+  void transform(matrix<double> &data) const{
     assert((int)mu.size() == data.width());
     for(int i = 0; i < data.height(); i++){
       for(int j = 0; j < data.width(); j++){
@@ -59,11 +60,12 @@ struct MinMaxScaler {
     }
   }
 
-  void transform(matrix<double> &data){
+  void transform(matrix<double> &data) const{
     assert((int)mi.size() == data.width());
     for(int i = 0; i < data.height(); i++){
       for(int j = 0; j < data.width(); j++){
-        data[i][j] = (data[i][j] - mi[j]) / (mx[j] - mi[j]);
+        if(mx[j] - mi[j] == 0) data[i][j] = 0;
+        else data[i][j] = (data[i][j] - mi[j]) / (mx[j] - mi[j]);
       }
     }
   }

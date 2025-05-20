@@ -55,7 +55,8 @@ struct Model {
         backward(e);
       }
       avg_err /= y.height();
-      if(step % 100 == 0) std::cerr << "Epoch: " << step << ", Loss: " << avg_err << "\n";
+      // if(step % 100 == 0)
+      std::cerr << "Epoch: " << step << ", Loss: " << avg_err << "\n";
     }
   }
 
@@ -68,6 +69,13 @@ struct Model {
       result[i] = std::max_element(gl.begin(), gl.end()) - gl.begin();
     }
     return result;
+  }
+
+  void show_overview() const{
+    std::cout << "Model Overview: \n";
+    for(const auto &l : layers){
+      std::cout << "- " << l->name() << ": " << l->size << "\n";
+    }
   }
 
 private:
