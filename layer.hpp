@@ -108,17 +108,18 @@ private:
   }
 };
 
-struct Output : Sigmoid {
-  using Sigmoid::Sigmoid;
+// Modelで出力を調整する
+struct Output : Layer {
+  using Layer::Layer;
 
   std::string name() const{ return "Output"; }
 
-// private:
-//   double f(const double x){
-//     return x;
-//   }
+private:
+  double f(const double x){
+    return x;
+  }
 
-//   double df(const double){
-//     return 1;
-//   }
+  double df(const double){
+    return 1;
+  }
 };

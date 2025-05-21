@@ -53,7 +53,7 @@ int main(int argc, char *argv[]){
   }
   data_filename += ".txt";
 
-  const double lr = 0.01;
+  const double lr = 0.1;
 
   matrix<double> X_data;
   std::vector<int> y_data;
@@ -61,7 +61,7 @@ int main(int argc, char *argv[]){
 
   matrix<double> X_train, y_train, X_test;
   std::vector<int> y_test;
-  train_test_split(X_train, y_train, X_test, y_test, X_data, y_data, 0.8);
+  train_test_split(X_train, y_train, X_test, y_test, X_data, y_data, 0.8, true, 10);
 
   MinMaxScaler ss;
   ss.fit(X_train);
@@ -76,7 +76,7 @@ int main(int argc, char *argv[]){
 
   model.init_params();
 
-  model.train(X_train, y_train, 40);
+  model.train(X_train, y_train, 100);
 
 
   const auto pred = model.predict(X_test);

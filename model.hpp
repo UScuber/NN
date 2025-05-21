@@ -44,18 +44,26 @@ struct Model {
         std::vector<double> gl = forward(X[p]);
         assert((int)gl.size() == layers.back()->size);
 
+        // softmax
+        double tot = 0;
+        for(auto &v : gl){
+          v = exp(v);
+          tot += v;
+        }
+        for(auto &v : gl) v /= tot;
+
         std::vector<double> e(layers.back()->size);
         for(int i = 0; i < layers.back()->size; i++){
           e[i] = gl[i] - y[p][i];
         }
 
-        const double err = dot(e, e) / 2.0;
+        double err = 0;
+        for(int i = 0; i < layers.back()->size; i++) err -= y[p][i] * log(gl[i] + 0.0001);
         avg_err += err;
 
         backward(e);
       }
       avg_err /= y.height();
-      // if(step % 100 == 0)
       std::cerr << "Epoch: " << step << ", Loss: " << avg_err << "\n";
     }
   }
@@ -91,7 +99,6 @@ private:
     std::vector<double> e = el;
 
     for(int i = (int)layers.size()-1; i >= 1; i--){
-      // std::cerr << i << " " << e.size() << " " << layers[i]->size << "   ";
       assert(layers[i]->size == (int)e.size());
       e = layers[i]->backward(e, W[i-1], rho);
     }
